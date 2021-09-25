@@ -1,0 +1,136 @@
+#!bin/bash
+#FROM https://gist.github.com/AndersNS/b3e961fb9148222bfad5
+
+#Update the system first
+sudo apt-get -y update && sudo apt-get -y dist-upgrade
+
+#
+# Remove stuff
+#
+
+#Clean-up System
+echo "Clean"
+sudo apt-get -y purge midori-granite # Browser
+sudo apt-get -y purge noise  # Music player
+sudo apt-get -y purge scratch-text-editor
+sudo apt-get -y purge bluez # Bluetooth stuff
+sudo apt-get -y purge modemmanager # 3G stuff
+sudo apt-get -y purge empathy # chat client
+sudo apt-get -y purge geary # E-mail client
+sudo apt-get -y autoremove
+sudo apt-get -y autoclean
+
+#Remove some Switchboard Plug's
+sudo rm -rf /usr/lib/plugs/GnomeCC/gnomecc-bluetooth.plug
+sudo rm -rf /usr/lib/plugs/GnomeCC/gnomecc-wacom.plug
+
+#
+# Add Repositories
+#
+
+# Google chrome
+wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+sudo sh -c 'echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list'
+
+# mono
+sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
+echo "deb http://download.mono-project.com/repo/debian wheezy main" | sudo tee --append /etc/apt/sources.list.d/mono-xamarin.list
+echo "deb http://download.mono-project.com/repo/debian wheezy-libtiff-compat main" | sudo tee -a /etc/apt/sources.list.d/mono-xamarin.list
+
+# git
+sudo add-apt-repository -y ppa:git-core/ppa
+
+# sublime
+sudo add-apt-repository -y ppa:webupd8team/sublime-text-3
+
+# elementary-stuff
+sudo apt-add-repository -y ppa:versable/elementary-update
+sudo add-apt-repository -y ppa:moka/stable
+
+# spotify
+sudo apt-add-repository -y "deb http://repository.spotify.com stable non-free"
+sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 94558F59 
+
+sudo apt-get -y update
+
+#
+# Install stuff
+#
+sudo apt-get -y install curl
+sudo apt-get -y install vim
+sudo apt-get -y install tmux
+sudo apt-get -y install google-chrome-stable
+sudo apt-get -y install sublime-text-installer
+sudo apt-get -y install unace unrar zip unzip xz-utils p7zip-full p7zip-rar sharutils rar uudeview mpack arj cabextract file-roller
+sudo apt-get -y install elementary-desktop elementary-tweaks
+sudo apt-get -y install wingpanel-slim indicator-synapse
+sudo apt-get -y install elementary-dark-theme
+sudo apt-get -t install moka-icon-theme
+sudo apt-get -y install git
+sudo apt-get -y install spotify-client
+sudo apt-get -y install automake libtool gcc
+
+#node
+echo "node"
+curl https://raw.githubusercontent.com/creationix/nvm/v0.24.1/install.sh | bash
+echo 'source ~/.nvm/nvm.sh' >> ~/.bashrc 
+source ~/.bashrc
+sudo chown -R $(whoami) ~/.nvm
+nvm install 0.12.2
+
+#atom
+echo "atom"
+cd ~/Downloads
+mkdir atom
+cd atom
+wget https://github.com/atom/atom/releases/download/v0.201.0/atom-amd64.deb
+sudo dpkg --install atom-amd64.deb
+sudo chown -R $(whoami) ~/.atom
+
+apm install seti-ui react linter linter-eslint atom-typescript gruvbox git-projects
+
+#libuv
+curl -sSL https://github.com/libuv/libuv/archive/v1.4.2.tar.gz | sudo tar zxfv - -C /usr/local/src
+cd /usr/local/src/libuv-1.4.2
+sudo sh autogen.sh
+sudo ./configure
+sudo make 
+sudo make install
+sudo rm -rf /usr/local/src/libuv-1.4.2 && cd ~/
+sudo ldconfig
+
+#
+# Set the pantheon terminal colors
+#
+base0='#838394949696'
+base1='#9393a1a1a1a1'
+base3='#fdfdf6f6e3e3'
+base00='#65657b7b8383'
+base01='#58586e6e7575'
+base03='#00002B2B3636'
+solarized_palette='#070736364242:#DCDC32322F2F:#858599990000:#B5B589890000:#26268B8BD2D2:#D3D336368282:#2A2AA1A19898:#EEEEE8E8D5D5:#00002B2B3636:#CBCB4B4B1616:#58586E6E7575:#65657B7B8383:#838394949696:#6C6C7171C4C4:#9393A1A1A1A1:#FDFDF6F6E3E3'
+default_palette='#303030:#e1321a:#6ab017:#ffc005:#004f9e:#ec0048:#2aa7e7:#f2f2f2:#5d5d5d:#ff361e:#7bc91f:#ffd00a:#0071ff:#ff1d62:#4bb8fd:#a020f0'
+
+gsettings set org.pantheon.terminal.settings background $base03
+gsettings set org.pantheon.terminal.settings foreground $base0
+gsettings set org.pantheon.terminal.settings cursor-color $base0
+gsettings set org.pantheon.terminal.settings palette $solarized_palette
+
+#finish
+echo "finish"
+sudo apt-get -y update
+sudo apt-get -y autoclean
+sudo apt-get -y autoremove
+
+#versions
+echo "versions"
+echo "atom"
+atom -v
+echo "node stuff: nvm, npm and node"
+nvm -v
+npm -v
+node -v
+echo "git"
+git --version
+echo "elixir"
+elixir -v

@@ -1,0 +1,206 @@
+#!bin/bash
+#FROM https://gist.github.com/Zeakk/a906da019ab6c1946bea
+
+#20 Things to do after installing Elementary OS Freya.
+#http://linuxscoop.com/video/20-things-to-do-after-installing-elementary-os-freya#comment-2492401665
+
+#Update the system first
+sudo apt-get -y update && sudo apt-get -y dist-upgrade
+
+#Install Google chrome
+wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+sudo sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list'
+sudo apt-get -y update
+sudo apt-get -y install google-chrome-stable
+
+#Clean-up System
+echo "Clean"
+sudo apt-get -y purge midori-granite # Browser
+sudo apt-get -y purge noise  # Music player
+sudo apt-get -y purge scratch-text-editor
+sudo apt-get -y purge software-center
+sudo apt-get -y purge bluez # Bluetooth stuff
+sudo apt-get -y purge modemmanager # 3G stuff
+sudo apt-get -y purge empathy # chat client
+sudo apt-get -y purge geary # E-mail client
+sudo apt-get -y autoremove
+sudo apt-get -y autoclean
+
+#Remove some Switchboard Plug's
+sudo rm -rf /usr/lib/plugs/GnomeCC/gnomecc-bluetooth.plug
+sudo rm -rf /usr/lib/plugs/GnomeCC/gnomecc-wacom.plug
+
+#Install Atom
+echo "atom"
+cd ~/Downloads
+mkdir atom
+cd atom
+wget https://github.com/atom/atom/releases/download/v1.5.4/atom-amd64.deb
+sudo dpkg --install atom-amd64.deb
+sudo chown -R $(whoami) ~/.atom
+
+-- CHECK THIS LIST. apm install seti-ui linter linter-eslint atom-typescript gruvbox git-projects
+
+#Install Sublime Text Editor
+sudo add-apt-repository -y ppa:webupd8team/sublime-text-3
+sudo apt-get -y install sublime-text-installer
+sudo apt-get -y install curl
+sudo apt-get -y install vim
+
+#Install File Compression Libs
+sudo apt-get -y install unace unrar zip unzip xz-utils p7zip-full p7zip-rar sharutils rar uudeview mpack arj cabextract file-roller
+
+#Install screenfetch (my elementary-OS special Version)
+mkdir screenfetch
+cd screenfetch
+wget https://raw.github.com/memoryleakx/screenFetch/master/screenfetch-dev
+sudo mv screenfetch-dev /usr/bin/screenfetch
+cd ..
+rm -rf screenfetch
+
+#make it readable and executable
+sudo chmod +rx /usr/bin/screenfetch
+
+##setup .bashrc for auto screenfetch
+-- CHECK TO SEE IF SUBLIME IS OPENEED LIKE THIS... sublime ~/.bashrc
+###put this on the last line
+screenfetch -D "Elementary"
+
+#For AMD/ATI Cards 
+sudo apt-get -y install fglrx-installer
+
+#Install Ubuntu Restricted Extras
+sudo apt-get -y install ubuntu-restricted-extras
+
+#Enable all Startup Applications
+cd /etc/xdg/autostart
+sudo sed --in-place 's/NoDisplay=true/NoDisplay=false/g' *.desktop
+
+#Enable Movie DVD Support
+sudo apt-get -y install libdvdread4
+sudo /usr/share/doc/libdvdread4/install-css.sh
+
+#Install a Firewall Application
+sudo apt-get -y install gufw
+
+#Install Gimp
+sudo add-apt-repository -7 ppa:otto-kesselgulasch/gimp
+sudo apt-get -y update
+sudo apt-get -y install gimp gimp-data gimp-plugin-registry gimp-data-extras
+
+#Install Git
+sudo add-apt-repository -y ppa:git-core/ppa
+sudo apt-get -y update
+sudo apt-get -y dist-upgrade
+sudo apt-get -y install git
+
+#Install Elementary-stuff
+sudo apt-add-repository -y ppa:versable/elementary-update
+sudo add-apt-repository -y ppa:moka/stable
+sudo apt-get -y install elementary-desktop elementary-tweaks
+sudo apt-get -y install wingpanel-slim indicator-synapse
+sudo apt-get -y install elementary-dark-theme
+sudo apt-get -t install moka-icon-theme
+sudo apt-get -y install automake libtool gcc
+
+#Install spotify
+sudo apt-add-repository -y "deb http://repository.spotify.com stable non-free"
+sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 94558F59 
+sudo apt-get -y install spotify-client
+
+#Install Apparmor 2.8
+sudo add-apt-repository -y ppa:apparmor-upload/apparmor-2.10
+sudo apt-get -y update && sudo apt-get -y dist-upgrade
+
+#Install Java 7
+echo "deb http://ppa.launchpad.net/webupd8team/java/ubuntu trusty main" | tee /etc/apt/sources.list.d/webupd8team-java.list
+echo "deb-src http://ppa.launchpad.net/webupd8team/java/ubuntu trusty main" | tee -a /etc/apt/sources.list.d/webupd8team-java.list
+apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys EEA14886
+sudo apt-get -y update
+sudo apt-get -y install oracle-java8-installer
+
+#Install Steam
+wget http://repo.steampowered.com/steam/signature.gpg && sudo apt-key add signature.gpg
+sudo sh -c 'echo "deb http://repo.steampowered.com/steam/ precise steam" >> /etc/apt/sources.list.d/steam.list'
+sudo apt-get -y update
+sudo apt-get -y install steam
+
+#Install PlayonLinux
+#Run Windows Applications and Games on Linux
+wget -q "http://deb.playonlinux.com/public.gpg" -O- | sudo apt-key add -
+sudo wget http://deb.playonlinux.com/playonlinux_precise.list -O /etc/apt/sources.list.d/playonlinux.list
+sudo apt-get -y update
+sudo apt-get -y install playonlinux
+
+#Install Skype
+sudo apt-add-repository -y "deb http://archive.canonical.com/ubuntu/ precise partner"
+sudo apt-get -y update && sudo apt-get -y install skype
+
+#Install Libre Office 4
+sudo add-apt-repository -y ppa:libreoffice/libreoffice-5-1
+sudo apt-get -y update
+sudo apt-get -y install libreoffice
+
+#Install the Clementine Music Player
+sudo add-apt-repository -y ppa:me-davidsansome/clementine
+sudo apt-get -y update
+sudo apt-get -y install clementine
+
+#Install Thunderbird
+sudo add-apt-repository -y ppa:ubuntu-mozilla-security/ppa
+sudo apt-get -y update
+sudo apt-get -y install thunderbird
+
+#node
+echo "node"
+curl https://raw.githubusercontent.com/creationix/nvm/v0.31.0/install.sh | bash
+echo 'source ~/.nvm/nvm.sh' >> ~/.bashrc 
+source ~/.bashrc
+sudo chown -R $(whoami) ~/.nvm
+nvm install 0.12.2
+
+#libuv
+curl -sSL https://github.com/libuv/libuv/archive/v1.8.0.tar.gz | sudo tar zxfv - -C /usr/local/src
+cd /usr/local/src/libuv-1.8.0
+sudo sh autogen.sh
+sudo ./configure
+sudo make 
+sudo make install
+sudo rm -rf /usr/local/src/libuv-1.8.0 && cd ~/
+sudo ldconfig
+
+#
+# Set the pantheon terminal colors
+#
+base0='#838394949696'
+base1='#9393a1a1a1a1'
+base3='#fdfdf6f6e3e3'
+base00='#65657b7b8383'
+base01='#58586e6e7575'
+base03='#00002B2B3636'
+solarized_palette='#070736364242:#DCDC32322F2F:#858599990000:#B5B589890000:#26268B8BD2D2:#D3D336368282:#2A2AA1A19898:#EEEEE8E8D5D5:#00002B2B3636:#CBCB4B4B1616:#58586E6E7575:#65657B7B8383:#838394949696:#6C6C7171C4C4:#9393A1A1A1A1:#FDFDF6F6E3E3'
+default_palette='#303030:#e1321a:#6ab017:#ffc005:#004f9e:#ec0048:#2aa7e7:#f2f2f2:#5d5d5d:#ff361e:#7bc91f:#ffd00a:#0071ff:#ff1d62:#4bb8fd:#a020f0'
+
+gsettings set org.pantheon.terminal.settings background $base03
+gsettings set org.pantheon.terminal.settings foreground $base0
+gsettings set org.pantheon.terminal.settings cursor-color $base0
+gsettings set org.pantheon.terminal.settings palette $solarized_palette
+
+#finish
+echo "finish"
+sudo apt-get -y update
+sudo apt-get -y autoclean
+sudo apt-get -y autoremove
+
+#versions
+echo "versions"
+echo "atom"
+atom -v
+echo "node stuff: nvm, npm and node"
+nvm -v
+npm -v
+node -v
+echo "git"
+git --version
+echo "elixir"
+elixir -v
